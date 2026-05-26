@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "App Broker Agro",
+    "slug": "app-broker-agro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "sdkVersion": "54.0.0",
+    "platforms": ["ios", "android", "web"],
+    "assetBundlePatterns": ["**/*"]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "app-broker-agro",
+  "version": "1.0.0",
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~6.1.2",
+    "buffer": "^6.0.3",
+    "expo": "^54.0.0",
+    "mqtt": "^5.15.1",
+    "process": "^0.11.10",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-web": "^0.21.0"
+  }
+}
