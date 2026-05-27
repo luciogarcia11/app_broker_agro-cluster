@@ -84,6 +84,7 @@ export default function App() {
           >
             {isSending ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Desligar LED</Text>}
           </Pressable>
+          
         </View>
 
         <View style={styles.messageBox}>
