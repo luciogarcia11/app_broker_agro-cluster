@@ -34,7 +34,7 @@ class MqttService {
       this.statusHandler?.("error", "MQTT WebSocket URL is missing");
       return;
     }
-    console.log("[MQTT] Connecting", { url, clientId: config.clientId, autoReconnect: config.autoReconnect });
+    console.log("[MQTT] Connecting", { url, clientId: config.clientId });
     const mqttModule = require("mqtt");
     const mqttFallback = require("mqtt/dist/mqtt");
     const mqttConnect =
@@ -52,8 +52,8 @@ class MqttService {
       username: config.username || undefined,
       password: config.password || undefined,
       keepalive: Number(config.keepAlive) || 30,
-      reconnectPeriod: config.autoReconnect ? 2000 : 0,
-      connectTimeout: 10000,
+      reconnectPeriod: 0, // Desabilita o reconnect infinito do mqtt.js forçando conexão estritamente manual!!
+      connectTimeout: 5000,
       clean: true,
     });
 
@@ -78,14 +78,29 @@ class MqttService {
       this.statusHandler?.("connecting");
     });
 
+    // Variável de controle para não apagar o erro quando parar o client
+    let failedWithError = false;
+
     this.client.on("close", () => {
       console.log("[MQTT] Connection closed");
-      this.statusHandler?.("disconnected");
+      if (!failedWithError) {
+        this.statusHandler?.("disconnected");
+      }
     });
 
-    this.client.on("error", (error) => {
+    this.client.on("error", (error: any) => {
       console.log("[MQTT] Error", error?.message || error);
-      this.statusHandler?.("error", error.message);
+      let cause = error?.message || "Erro desconhecido";
+      if (!error?.message && error?.code) cause = `Código de erro: ${error.code}`;
+      
+      failedWithError = true;
+      this.statusHandler?.("error", cause);
+      
+      // Encerra imediatamente o client para evitar loop infinito de tentativas (reconnect) do pacote mqtt
+      // ao se deparar com host errado, porta errada ou credenciais inválidas.
+      if (this.client) {
+         this.client.end(true);
+      }
     });
   }
 

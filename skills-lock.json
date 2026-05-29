@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "skills": {
+    "iot": {
+      "source": "markdown-viewer/skills",
+      "sourceType": "github",
+      "skillPath": "iot/SKILL.md",
+      "computedHash": "80599ee662f2026973d1da3bd976c2dc624ad5c49df2d4bf7aa0699e901ca4c1"
+    },
+    "iot-firmware": {
+      "source": "ruvnet/ruflo",
+      "sourceType": "github",
+      "skillPath": "plugins/ruflo-iot-cognitum/skills/iot-firmware/SKILL.md",
+      "computedHash": "52febd9dfb2db05cf1b8cdc061c93e1cc43aada12bc17a87b3f3f94e96415c29"
+    },
+    "mqtt-development": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "skillPath": "mqtt-development/SKILL.md",
+      "computedHash": "b45982e5410605159233eacb0a892132602633146ac187a1bb8469076e550904"
+    },
+    "react-native-architecture": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/frontend-mobile-development/skills/react-native-architecture/SKILL.md",
+      "computedHash": "82b148f23840f412cb29f6085f0a4cf34052301646bc24ed8befe08ef2448f99"
+    },
+    "react-native-best-practices": {
+      "source": "callstackincubator/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-native-best-practices/SKILL.md",
+      "computedHash": "9583e7bb38bfc018ff2252a6649a569cff185f01894e24b015f5adcd63ed04e5"
+    },
+    "ui-ux-designer": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ui-ux-designer/SKILL.md",
+      "computedHash": "fdccdfcc9b31cf185402e74d3d94b56709a6d4d2d92a4313d0fbafcca0a6d9a7"
+    },
+    "upgrading-react-native": {
+      "source": "callstackincubator/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/upgrading-react-native/SKILL.md",
+      "computedHash": "5109893f9a5a6b5d27a81be6b4b48fef39802a5b36ae5e4ee0f6f9cd6223c721"
+    }
+  }
+}

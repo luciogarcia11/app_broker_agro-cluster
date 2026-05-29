@@ -1,4 +1,5 @@
 import React from "react";
+import { View, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -19,29 +20,45 @@ export type BottomTabParamList = {
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
+const ICON_MAP: Record<string, { active: keyof typeof Ionicons.glyphMap; outline: keyof typeof Ionicons.glyphMap }> = {
+  Dashboard: { active: "pulse", outline: "pulse-outline" },
+  ESPs: { active: "hardware-chip", outline: "hardware-chip-outline" },
+  Controls: { active: "game-controller", outline: "game-controller-outline" },
+  MQTT: { active: "cloud", outline: "cloud-outline" },
+  Settings: { active: "settings", outline: "settings-outline" },
+};
+
 export function BottomTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: AppTheme.colors.accentBlue,
-        tabBarInactiveTintColor: "#93a9c4",
+        tabBarActiveTintColor: AppTheme.colors.primary,
+        tabBarInactiveTintColor: "rgba(255, 255, 255, 0.35)",
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "700",
+          letterSpacing: 0.3,
+        },
         tabBarStyle: {
-          backgroundColor: "#0d2342",
-          borderTopColor: "#173459",
-          height: 64,
-          paddingBottom: 8,
+          backgroundColor: "#0a1d38",
+          borderTopColor: "rgba(34, 211, 238, 0.12)",
+          borderTopWidth: 1,
+          height: 68,
+          paddingBottom: 10,
           paddingTop: 8,
         },
-        tabBarIcon: ({ color, size }) => {
-          const iconMap: Record<string, keyof typeof Ionicons.glyphMap> = {
-            Dashboard: "pulse",
-            ESPs: "hardware-chip",
-            Controls: "game-controller",
-            MQTT: "cloud",
-            Settings: "settings",
-          };
-          return <Ionicons name={iconMap[route.name]} size={size} color={color} />;
+        tabBarIcon: ({ color, size, focused }) => {
+          const icons = ICON_MAP[route.name];
+          return (
+            <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
+              <Ionicons
+                name={focused ? icons.active : icons.outline}
+                size={size}
+                color={color}
+              />
+            </View>
+          );
         },
       })}
     >
@@ -53,3 +70,11 @@ export function BottomTabs() {
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  iconContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconContainerActive: {},
+});

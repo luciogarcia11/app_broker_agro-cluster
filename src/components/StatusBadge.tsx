@@ -6,6 +6,7 @@ import { AppTheme } from "../styles/theme";
 interface StatusBadgeProps {
   label: string;
   tone: "success" | "muted" | "warning" | "danger";
+  pulsing?: boolean;
 }
 
 export function StatusBadge({ label, tone }: StatusBadgeProps) {
@@ -16,8 +17,15 @@ export function StatusBadge({ label, tone }: StatusBadgeProps) {
     danger: AppTheme.colors.danger,
   }[tone];
 
+  const bgColor = {
+    success: AppTheme.colors.successBg,
+    muted: "transparent",
+    warning: AppTheme.colors.warningBg,
+    danger: AppTheme.colors.dangerBg,
+  }[tone];
+
   return (
-    <View style={[styles.badge, { borderColor: toneColor }]}>
+    <View style={[styles.badge, { borderColor: toneColor, backgroundColor: bgColor }]}>
       <View style={[styles.dot, { backgroundColor: toneColor }]} />
       <Text style={[styles.text, { color: toneColor }]}>{label}</Text>
     </View>
@@ -29,7 +37,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderRadius: 999,
+    borderRadius: AppTheme.radius.full,
     paddingHorizontal: 10,
     paddingVertical: 4,
     gap: 6,

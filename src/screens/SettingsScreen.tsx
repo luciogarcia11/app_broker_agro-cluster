@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 
 import { GradientBackground } from "../components/GradientBackground";
 import { GlassCard } from "../components/GlassCard";
@@ -59,39 +60,68 @@ export function SettingsScreen() {
   return (
     <GradientBackground>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Settings</Text>
-        <Text style={styles.subtitle}>Customize your experience</Text>
+        <View style={styles.headerSection}>
+          <Text style={styles.title}>Settings</Text>
+          <Text style={styles.subtitle}>Configurações do app</Text>
+          <View style={styles.headerAccent} />
+        </View>
 
         <GlassCard>
-          <SectionTitle title="Preferences" />
+          <SectionTitle title="Preferences" icon="options-outline" />
           <View style={styles.switchRow}>
-            <Text style={styles.switchLabel}>Dark mode</Text>
-            <Switch value={settings.darkMode} onValueChange={(value) => updateSetting("darkMode", value)} />
+            <View style={styles.switchLabelRow}>
+              <Ionicons name="moon-outline" size={16} color={AppTheme.colors.textMuted} />
+              <Text style={styles.switchLabel}>Dark mode</Text>
+            </View>
+            <Switch
+              value={settings.darkMode}
+              onValueChange={(value) => updateSetting("darkMode", value)}
+              trackColor={{ false: AppTheme.colors.cardSecondary, true: AppTheme.colors.primary }}
+              thumbColor={settings.darkMode ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted}
+            />
           </View>
           <View style={styles.switchRow}>
-            <Text style={styles.switchLabel}>Notifications</Text>
+            <View style={styles.switchLabelRow}>
+              <Ionicons name="notifications-outline" size={16} color={AppTheme.colors.textMuted} />
+              <Text style={styles.switchLabel}>Notifications</Text>
+            </View>
             <Switch
               value={settings.notifications}
               onValueChange={(value) => updateSetting("notifications", value)}
+              trackColor={{ false: AppTheme.colors.cardSecondary, true: AppTheme.colors.primary }}
+              thumbColor={settings.notifications ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted}
             />
           </View>
           <View style={styles.switchRow}>
-            <Text style={styles.switchLabel}>Auto reconnect</Text>
+            <View style={styles.switchLabelRow}>
+              <Ionicons name="repeat-outline" size={16} color={AppTheme.colors.textMuted} />
+              <Text style={styles.switchLabel}>Auto reconnect</Text>
+            </View>
             <Switch
               value={settings.autoReconnect}
               onValueChange={(value) => updateSetting("autoReconnect", value)}
+              trackColor={{ false: AppTheme.colors.cardSecondary, true: AppTheme.colors.primary }}
+              thumbColor={settings.autoReconnect ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted}
             />
           </View>
         </GlassCard>
 
         <GlassCard>
-          <SectionTitle title="About" />
-          <Text style={styles.metaText}>Agro-Cluster v1.0.0</Text>
-          <Text style={styles.metaText}>Premium IoT dashboard for smart farming.</Text>
+          <SectionTitle title="About" icon="information-circle-outline" />
+          <View style={styles.aboutRow}>
+            <Ionicons name="leaf-outline" size={32} color={AppTheme.colors.secondary} />
+            <View style={styles.aboutInfo}>
+              <Text style={styles.aboutTitle}>Agro-Cluster</Text>
+              <Text style={styles.aboutVersion}>v1.0.0</Text>
+            </View>
+          </View>
+          <Text style={styles.aboutDesc}>
+            Painel IoT premium para monitoramento e controle de mini estufa com cluster ESP32.
+          </Text>
         </GlassCard>
 
         <GlassCard>
-          <SectionTitle title="Maintenance" />
+          <SectionTitle title="Maintenance" icon="construct-outline" />
           <ToggleButton label="Reset MQTT configuration" active onPress={resetMqttConfig} />
           <View style={styles.spacer} />
           <ToggleButton label="Clear cached data" active onPress={clearCache} />
@@ -107,29 +137,71 @@ const styles = StyleSheet.create({
   container: {
     padding: AppTheme.spacing.lg,
     paddingTop: 56,
+    paddingBottom: 32,
+  },
+  headerSection: {
+    marginBottom: AppTheme.spacing.lg,
+  },
+  headerAccent: {
+    height: 3,
+    width: 60,
+    backgroundColor: AppTheme.colors.primary,
+    borderRadius: 2,
+    marginTop: AppTheme.spacing.sm,
   },
   title: {
-    color: AppTheme.colors.white,
+    color: AppTheme.colors.textOnDark,
     fontSize: 28,
     fontWeight: "700",
+    letterSpacing: -0.5,
   },
   subtitle: {
-    color: "rgba(255, 255, 255, 0.7)",
-    marginBottom: AppTheme.spacing.lg,
+    color: "rgba(255, 255, 255, 0.6)",
+    fontSize: 13,
+    marginTop: 4,
   },
   switchRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: AppTheme.spacing.sm,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: AppTheme.colors.divider,
+  },
+  switchLabelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   switchLabel: {
-    color: AppTheme.colors.textMuted,
+    color: AppTheme.colors.textSecondary,
+    fontSize: 14,
+    fontWeight: "500",
   },
-  metaText: {
+  aboutRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginTop: AppTheme.spacing.sm,
+  },
+  aboutInfo: {
+    flex: 1,
+  },
+  aboutTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: AppTheme.colors.textPrimary,
+  },
+  aboutVersion: {
+    fontSize: 13,
+    color: AppTheme.colors.textMuted,
+    marginTop: 2,
+  },
+  aboutDesc: {
     color: AppTheme.colors.textMuted,
     fontSize: 13,
-    marginTop: 6,
+    marginTop: AppTheme.spacing.sm,
+    lineHeight: 18,
   },
   spacer: {
     height: AppTheme.spacing.sm,

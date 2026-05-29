@@ -1,10 +1,18 @@
-import React, { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import React, { createContext, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { mqttService } from "../services/mqttService";
 import { MqttConfig, MqttState } from "../types/mqtt";
 import { ActuatorState, Bme280Data, LuxData, SystemStatus } from "../types/sensors";
-import { EspNode } from "../types/esp";
+import { EspNode, EspRole } from "../types/esp";
+
+const ESP_STALE_MS = 15000;
+
+interface TrackedNode {
+  id: string;
+  role: EspRole;
+  lastSeen: number;
+}
 
 interface MqttContextValue {
   config: MqttConfig;
@@ -20,6 +28,8 @@ interface MqttContextValue {
   publish: (topic: string, payload: string) => void;
 }
 
+
+
 const STORAGE_KEY = "agrocluster.mqtt.config";
 
 const defaultConfig: MqttConfig = {
@@ -30,7 +40,7 @@ const defaultConfig: MqttConfig = {
   username: "",
   password: "",
   useTls: true,
-  autoReconnect: true,
+  autoReconnect: false, // Alterado para falso por padrão
   keepAlive: "30",
   topics: [
     "agrocluster/sensors/bme280",
@@ -59,6 +69,21 @@ export function MqttProvider({ children }: { children: ReactNode }) {
   const [systemStatus, setSystemStatus] = useState<SystemStatus>(defaultSystemStatus);
   const [isReady, setIsReady] = useState(false);
 
+  const trackedNodes = useRef<Record<string, TrackedNode>>({});
+  const hasExplicitList = useRef(false);
+
+  const buildEspNodesFromTracked = useCallback((): EspNode[] => {
+    const now = Date.now();
+    return Object.values(trackedNodes.current).map((t) => ({
+      id: t.id,
+      mac: t.id,
+      role: t.role,
+      online: now - t.lastSeen < ESP_STALE_MS,
+      rssi: 0,
+      lastSeen: t.lastSeen,
+    }));
+  }, []);
+
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY)
       .then((stored) => {
@@ -72,6 +97,17 @@ export function MqttProvider({ children }: { children: ReactNode }) {
       })
       .finally(() => setIsReady(true));
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!hasExplicitList.current) {
+        const nodes = buildEspNodesFromTracked();
+        setEspNodes(nodes);
+        setSystemStatus((s) => ({ ...s, activeEsps: nodes.filter((n) => n.online).length }));
+      }
+    }, ESP_STALE_MS / 2);
+    return () => clearInterval(interval);
+  }, [buildEspNodesFromTracked]);
 
   const handleStatus = useCallback((status: MqttState["status"], error?: string) => {
     setMqttState({ status, lastError: error, lastPacketAt: Date.now() });
@@ -91,25 +127,45 @@ export function MqttProvider({ children }: { children: ReactNode }) {
       if (topic.includes("bme280")) {
         const data = JSON.parse(payload) as Partial<Bme280Data>;
         setBme280({
-          temperature: data.temperature ?? 24.2,
-          humidity: data.humidity ?? 58,
-          pressure: data.pressure ?? 1012,
-          espId: data.espId ?? "ESP-01",
+          temperature: data.temperature as number,
+          humidity: data.humidity as number,
+          pressure: data.pressure as number,
+          espId: data.espId as string,
           updatedAt: now,
           online: true,
         });
+        if (data.espId) {
+          trackedNodes.current[data.espId] = {
+            id: data.espId,
+            role: "Sensor",
+            lastSeen: now,
+          };
+          if (!hasExplicitList.current) {
+            setEspNodes(buildEspNodesFromTracked());
+          }
+        }
       }
 
       if (topic.includes("lux")) {
         const data = JSON.parse(payload) as Partial<LuxData> & { lux?: number };
-        const luxValue = data.lux ?? 120;
+        const luxValue = data.lux;
         setLux({
-          lux: luxValue,
-          state: luxValue <= 50 ? "NIGHT" : "DAY",
-          espId: data.espId ?? "ESP-02",
+          lux: luxValue as number,
+          state: data.state as "DAY" | "NIGHT",
+          espId: data.espId as string,
           updatedAt: now,
           online: true,
         });
+        if (data.espId) {
+          trackedNodes.current[data.espId] = {
+            id: data.espId,
+            role: "Sensor",
+            lastSeen: now,
+          };
+          if (!hasExplicitList.current) {
+            setEspNodes(buildEspNodesFromTracked());
+          }
+        }
       }
 
       if (topic.includes("actuators")) {
@@ -117,15 +173,26 @@ export function MqttProvider({ children }: { children: ReactNode }) {
         setActuators({
           fan: Boolean(data.fan),
           light: Boolean(data.light),
-          irrigation: Boolean(data.irrigation),
-          espId: data.espId ?? "ESP-03",
+
+          espId: data.espId as string,
           updatedAt: now,
         });
+        if (data.espId) {
+          trackedNodes.current[data.espId] = {
+            id: data.espId,
+            role: "Actuator",
+            lastSeen: now,
+          };
+          if (!hasExplicitList.current) {
+            setEspNodes(buildEspNodesFromTracked());
+          }
+        }
       }
 
       if (topic.includes("esp/list")) {
         const data = JSON.parse(payload) as EspNode[];
         if (Array.isArray(data)) {
+          hasExplicitList.current = true;
           setEspNodes(data);
           setSystemStatus((prev) => ({
             ...prev,
@@ -148,29 +215,30 @@ export function MqttProvider({ children }: { children: ReactNode }) {
     } catch {
       // Ignore malformed payloads.
     }
-  }, [mqttState.status]);
-
-  useEffect(() => {
-    if (!isReady) return;
-    if (mqttState.status !== "disconnected") return;
-    if (!config.websocketUrl && !config.brokerUrl) return;
-    if (!config.autoReconnect) return;
-    mqttService.connect(config, handleStatus, handleMessage);
-  }, [config, handleMessage, handleStatus, isReady, mqttState.status]);
+  }, [mqttState.status, buildEspNodesFromTracked]);
 
   const connect = useCallback(() => {
+    trackedNodes.current = {};
+    hasExplicitList.current = false;
+    setEspNodes([]);
+    setSystemStatus(defaultSystemStatus);
     mqttService.connect(config, handleStatus, handleMessage);
   }, [config, handleMessage, handleStatus]);
 
   const disconnect = useCallback(() => {
     mqttService.disconnect();
-    setMqttState({ status: "disconnected" });
+    setMqttState({ status: "disconnected", lastError: undefined });
   }, []);
 
   const saveConfig = useCallback(async (next: MqttConfig) => {
     setConfig(next);
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  }, []);
+    
+    if (mqttState.status !== "disconnected") {
+      mqttService.disconnect();
+      setMqttState({ status: "disconnected", lastError: undefined });
+    }
+  }, [mqttState.status]);
 
   const publish = useCallback((topic: string, payload: string) => {
     mqttService.publish(topic, payload);

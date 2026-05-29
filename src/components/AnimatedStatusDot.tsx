@@ -6,41 +6,45 @@ import { AppTheme } from "../styles/theme";
 interface AnimatedStatusDotProps {
   active: boolean;
   style?: ViewStyle;
+  size?: number;
 }
 
-export function AnimatedStatusDot({ active, style }: AnimatedStatusDotProps) {
-  const scale = useRef(new Animated.Value(1)).current;
+export function AnimatedStatusDot({ active, style, size = 10 }: AnimatedStatusDotProps) {
+  const anim = useRef(new Animated.Value(active ? 1 : 0)).current;
 
   useEffect(() => {
-    if (!active) return;
+    if (active) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(anim, { toValue: 1.5, duration: 1200, useNativeDriver: true }),
+          Animated.timing(anim, { toValue: 1, duration: 1200, useNativeDriver: true }),
+        ]),
+      ).start();
+    } else {
+      anim.stopAnimation();
+      Animated.timing(anim, { toValue: 1, duration: 200, useNativeDriver: true }).start();
+    }
 
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(scale, { toValue: 1.6, duration: 1200, useNativeDriver: true }),
-        Animated.timing(scale, { toValue: 1, duration: 1200, useNativeDriver: true }),
-      ])
-    );
-
-    loop.start();
-    return () => loop.stop();
-  }, [active, scale]);
+    return () => anim.stopAnimation();
+  }, [active, anim]);
 
   return (
     <Animated.View
       style={[
         styles.dot,
-        { backgroundColor: active ? AppTheme.colors.success : AppTheme.colors.textMuted },
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: active ? AppTheme.colors.success : AppTheme.colors.textMuted,
+          transform: [{ scale: anim }],
+        },
         style,
-        active && { transform: [{ scale }] },
       ]}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
+  dot: {},
 });

@@ -18,7 +18,6 @@ export interface LuxData {
 export interface ActuatorState {
   fan: boolean;
   light: boolean;
-  irrigation: boolean;
   espId: string;
   updatedAt: number;
 }

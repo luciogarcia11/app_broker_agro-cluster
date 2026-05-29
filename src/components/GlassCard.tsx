@@ -8,12 +8,26 @@ interface GlassCardProps {
   children: ReactNode;
   style?: ViewStyle;
   intensity?: number;
+  accent?: "none" | "cyan" | "green";
 }
 
-export function GlassCard({ children, style, intensity = 24 }: GlassCardProps) {
+export function GlassCard({
+  children,
+  style,
+  intensity = 20,
+  accent = "none",
+}: GlassCardProps) {
+  const accentColor =
+    accent === "cyan"
+      ? AppTheme.colors.primary
+      : accent === "green"
+        ? AppTheme.colors.secondary
+        : "transparent";
+
   return (
     <View style={[styles.card, style]}>
       <BlurView intensity={intensity} tint="light" style={StyleSheet.absoluteFill} />
+      <View style={[styles.accentBar, { backgroundColor: accentColor }]} />
       <View style={styles.content}>{children}</View>
     </View>
   );
@@ -21,16 +35,23 @@ export function GlassCard({ children, style, intensity = 24 }: GlassCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "rgba(255, 255, 255, 0.88)",
+    backgroundColor: AppTheme.colors.cardPrimary,
     borderRadius: AppTheme.radius.lg,
-    padding: AppTheme.spacing.lg,
     marginBottom: AppTheme.spacing.lg,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(125, 211, 252, 0.28)",
-    ...AppTheme.shadow.soft,
+    borderColor: AppTheme.colors.cardGlassBorder,
+    ...AppTheme.shadows.md,
+  },
+  accentBar: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 3,
   },
   content: {
+    padding: AppTheme.spacing.lg,
     gap: AppTheme.spacing.sm,
   },
 });
