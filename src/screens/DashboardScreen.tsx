@@ -17,7 +17,7 @@ export function DashboardScreen() {
   const connected = mqttState.status === "connected";
   const connecting = mqttState.status === "connecting";
   const mqttBadgeTone = connected ? "success" : connecting ? "warning" : "danger";
-  const mqttBadgeLabel = connected ? "CONNECTED" : connecting ? "CONNECTING" : "OFFLINE";
+  const mqttBadgeLabel = connected ? 'ONLINE' : connecting ? '...' : 'OFFLINE';
 
   return (
     <GradientBackground>
@@ -29,8 +29,10 @@ export function DashboardScreen() {
               <Text style={styles.subtitle}>Mini estufa · Monitoramento em tempo real</Text>
             </View>
             <View style={styles.brokerRow}>
-              <AnimatedStatusDot active={connected} size={12} />
-              <Text style={styles.brokerText}>{mqttBadgeLabel}</Text>
+              <AnimatedStatusDot active={connected} size={10} style={{ marginRight: 4 }} />
+              <Text style={styles.brokerText}>
+                {connected ? 'ONLINE' : mqttBadgeLabel}
+              </Text>
             </View>
           </View>
           <View style={styles.headerAccent} />
@@ -199,7 +201,7 @@ const styles = StyleSheet.create({
   container: {
     padding: AppTheme.spacing.lg,
     paddingTop: 56,
-    paddingBottom: 32,
+    paddingBottom: 80,
   },
   headerSection: {
     marginBottom: AppTheme.spacing.lg,
@@ -232,15 +234,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     backgroundColor: "rgba(255, 255, 255, 0.08)",
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: AppTheme.radius.full,
+    overflow: "hidden",
+    marginBottom: 8
   },
   brokerText: {
     color: AppTheme.colors.textOnDark,
     fontSize: 12,
     fontWeight: "700",
     letterSpacing: 0.5,
+    maxWidth: 80,
+    overflow: "hidden",
   },
   cardHeader: {
     flexDirection: "row",

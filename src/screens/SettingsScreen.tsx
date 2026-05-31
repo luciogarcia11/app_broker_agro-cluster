@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   container: {
     padding: AppTheme.spacing.lg,
     paddingTop: 56,
-    paddingBottom: 32,
+    paddingBottom: 80,
   },
   headerSection: {
     marginBottom: AppTheme.spacing.lg,

@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: AppTheme.spacing.lg,
     paddingTop: 56,
+    paddingBottom: 80,
   },
   headerSection: {
     marginBottom: AppTheme.spacing.lg,

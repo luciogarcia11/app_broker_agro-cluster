@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, StyleSheet, Animated, Dimensions, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -44,9 +44,19 @@ export function BottomTabs() {
           backgroundColor: "#0a1d38",
           borderTopColor: "rgba(34, 211, 238, 0.12)",
           borderTopWidth: 1,
-          height: 68,
-          paddingBottom: 10,
+          height: 72,
+          paddingBottom: 12,
           paddingTop: 8,
+          position: "absolute",
+          bottom: 20,
+          left: 20,
+          right: 20,
+          borderRadius: 24,
+          elevation: 5,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 6,
         },
         tabBarIcon: ({ color, size, focused }) => {
           const icons = ICON_MAP[route.name];
@@ -76,5 +86,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  iconContainerActive: {},
+  iconContainerActive: {
+    transform: [{ scale: 1.1 }],
+  },
 });
