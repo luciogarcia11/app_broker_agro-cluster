@@ -16,14 +16,9 @@ export function GradientBackground({ children }: GradientBackgroundProps) {
           AppTheme.colors.backgroundStart,
           AppTheme.colors.backgroundMid,
           AppTheme.colors.backgroundEnd,
+          "rgba(34, 211, 238, 0.04)",
         ]}
-        locations={[0, 0.5, 1]}
-        style={StyleSheet.absoluteFill}
-      />
-      <LinearGradient
-        colors={["rgba(34, 211, 238, 0.04)", "transparent"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        locations={[0, 0.3, 0.7, 1]}
         style={StyleSheet.absoluteFill}
       />
       {children}

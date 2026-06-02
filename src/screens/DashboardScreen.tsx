@@ -15,9 +15,8 @@ export function DashboardScreen() {
   const { bme280, lux, actuators, mqttState, systemStatus } = useMqtt();
 
   const connected = mqttState.status === "connected";
-  const connecting = mqttState.status === "connecting";
-  const mqttBadgeTone = connected ? "success" : connecting ? "warning" : "danger";
-  const mqttBadgeLabel = connected ? 'ONLINE' : connecting ? '...' : 'OFFLINE';
+  const mqttBadgeTone = connected ? "success" : "danger";
+  const mqttBadgeLabel = connected ? 'ONLINE' : 'OFFLINE';
 
   return (
     <GradientBackground>
@@ -309,8 +308,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   actuatorBlockOn: {
-    backgroundColor: AppTheme.colors.secondary === "#4ade80"
-      ? "rgba(74, 222, 128, 0.12)" : "rgba(74, 222, 128, 0.12)",
+    backgroundColor: "rgba(74, 222, 128, 0.12)",
     borderColor: AppTheme.colors.secondary,
   },
   actuatorLabel: {

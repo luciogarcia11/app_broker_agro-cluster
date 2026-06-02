@@ -4,7 +4,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
 import { enableScreens } from "react-native-screens";
-
 import { MqttProvider } from "./src/contexts/MqttContext";
 import { AppTheme } from "./src/styles/theme";
 import { BottomTabs } from "./src/navigation/BottomTabs";
@@ -23,3 +22,5 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+
+  

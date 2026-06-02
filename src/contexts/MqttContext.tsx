@@ -67,7 +67,6 @@ export function MqttProvider({ children }: { children: ReactNode }) {
   const [actuators, setActuators] = useState<ActuatorState | null>(null);
   const [espNodes, setEspNodes] = useState<EspNode[]>([]);
   const [systemStatus, setSystemStatus] = useState<SystemStatus>(defaultSystemStatus);
-  const [isReady, setIsReady] = useState(false);
 
   const trackedNodes = useRef<Record<string, TrackedNode>>({});
   const hasExplicitList = useRef(false);
@@ -94,8 +93,7 @@ export function MqttProvider({ children }: { children: ReactNode }) {
         } catch {
           setConfig(defaultConfig);
         }
-      })
-      .finally(() => setIsReady(true));
+      });
   }, []);
 
   useEffect(() => {
