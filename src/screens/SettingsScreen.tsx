@@ -77,7 +77,9 @@ export function SettingsScreen() {
               value={settings.darkMode}
               onValueChange={(value) => updateSetting("darkMode", value)}
               trackColor={{ false: AppTheme.colors.cardSecondary, true: AppTheme.colors.primary }}
-              thumbColor={settings.darkMode ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted}
+              thumbColor={
+                settings.darkMode ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted
+              }
             />
           </View>
           <View style={styles.switchRow}>
@@ -89,7 +91,9 @@ export function SettingsScreen() {
               value={settings.notifications}
               onValueChange={(value) => updateSetting("notifications", value)}
               trackColor={{ false: AppTheme.colors.cardSecondary, true: AppTheme.colors.primary }}
-              thumbColor={settings.notifications ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted}
+              thumbColor={
+                settings.notifications ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted
+              }
             />
           </View>
           <View style={styles.switchRow}>
@@ -101,7 +105,9 @@ export function SettingsScreen() {
               value={settings.autoReconnect}
               onValueChange={(value) => updateSetting("autoReconnect", value)}
               trackColor={{ false: AppTheme.colors.cardSecondary, true: AppTheme.colors.primary }}
-              thumbColor={settings.autoReconnect ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted}
+              thumbColor={
+                settings.autoReconnect ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted
+              }
             />
           </View>
         </GlassCard>

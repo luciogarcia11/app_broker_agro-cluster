@@ -71,8 +71,16 @@ export function MqttScreen() {
           )}
 
           <View style={styles.buttonRow}>
-            <ToggleButton label="Connect" active={mqttState.status === "connected"} onPress={connect} />
-            <ToggleButton label="Disconnect" active={mqttState.status === "disconnected"} onPress={disconnect} />
+            <ToggleButton
+              label="Connect"
+              active={mqttState.status === "connected"}
+              onPress={connect}
+            />
+            <ToggleButton
+              label="Disconnect"
+              active={mqttState.status === "disconnected"}
+              onPress={disconnect}
+            />
           </View>
         </GlassCard>
 
@@ -145,7 +153,9 @@ export function MqttScreen() {
                 value={draft.autoReconnect}
                 onValueChange={(value) => updateDraft({ autoReconnect: value })}
                 trackColor={{ false: AppTheme.colors.cardSecondary, true: AppTheme.colors.primary }}
-                thumbColor={draft.autoReconnect ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted}
+                thumbColor={
+                  draft.autoReconnect ? AppTheme.colors.textOnDark : AppTheme.colors.textMuted
+                }
               />
             </View>
           </View>

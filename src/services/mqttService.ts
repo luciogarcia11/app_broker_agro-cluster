@@ -53,7 +53,7 @@ class MqttService {
       }
     });
 
-    this.client.on("message", (topic, payload) => {
+    this.client.on("message", (topic: string, payload: Buffer) => {
       this.messageHandler?.(topic, payload.toString());
     });
 

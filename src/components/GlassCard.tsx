@@ -11,12 +11,7 @@ interface GlassCardProps {
   accent?: "none" | "cyan" | "green";
 }
 
-export function GlassCard({
-  children,
-  style,
-  intensity = 20,
-  accent = "none",
-}: GlassCardProps) {
+export function GlassCard({ children, style, intensity = 20, accent = "none" }: GlassCardProps) {
   const accentColor =
     accent === "cyan"
       ? AppTheme.colors.primary

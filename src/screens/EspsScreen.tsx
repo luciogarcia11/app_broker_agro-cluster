@@ -5,7 +5,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { GradientBackground } from "../components/GradientBackground";
 import { GlassCard } from "../components/GlassCard";
 import { AnimatedStatusDot } from "../components/AnimatedStatusDot";
-import { SectionTitle } from "../components/SectionTitle";
 import { useMqtt } from "../hooks/useMqtt";
 import { AppTheme } from "../styles/theme";
 import { formatRelativeTime } from "../utils/time";
@@ -87,16 +86,17 @@ export function EspsScreen() {
             <GlassCard key={node.id} accent={node.online ? "green" : "none"}>
               <View style={styles.cardHeader}>
                 <View style={styles.cardTitleRow}>
-                  <Ionicons
-                    name={ROLE_ICONS[node.role]}
-                    size={20}
-                    color={ROLE_COLORS[node.role]}
-                  />
+                  <Ionicons name={ROLE_ICONS[node.role]} size={20} color={ROLE_COLORS[node.role]} />
                   <Text style={styles.nodeId}>{node.id}</Text>
                 </View>
                 <View style={styles.statusRow}>
                   <AnimatedStatusDot active={node.online} size={10} />
-                  <Text style={[styles.statusText, { color: node.online ? AppTheme.colors.success : AppTheme.colors.textMuted }]}>
+                  <Text
+                    style={[
+                      styles.statusText,
+                      { color: node.online ? AppTheme.colors.success : AppTheme.colors.textMuted },
+                    ]}
+                  >
                     {node.online ? "ONLINE" : "OFFLINE"}
                   </Text>
                 </View>

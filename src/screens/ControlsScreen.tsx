@@ -41,9 +41,7 @@ export function ControlsScreen() {
           <GlassCard>
             <View style={styles.disconnectedContainer}>
               <Ionicons name="cloud-offline-outline" size={40} color={AppTheme.colors.textMuted} />
-              <Text style={styles.disconnectedText}>
-                Broker desconectado
-              </Text>
+              <Text style={styles.disconnectedText}>Broker desconectado</Text>
               <Text style={styles.disconnectedHint}>
                 Vá em MQTT e conecte-se para enviar comandos.
               </Text>

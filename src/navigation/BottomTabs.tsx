@@ -1,11 +1,10 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { StyleSheet, View } from "react-native";
 
+import { ControlsScreen } from "../screens/ControlsScreen";
 import { DashboardScreen } from "../screens/DashboardScreen";
 import { EspsScreen } from "../screens/EspsScreen";
-import { ControlsScreen } from "../screens/ControlsScreen";
 import { MqttScreen } from "../screens/MqttScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
 import { AppTheme } from "../styles/theme";
@@ -20,7 +19,10 @@ export type BottomTabParamList = {
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const ICON_MAP: Record<string, { active: keyof typeof Ionicons.glyphMap; outline: keyof typeof Ionicons.glyphMap }> = {
+const ICON_MAP: Record<
+  string,
+  { active: keyof typeof Ionicons.glyphMap; outline: keyof typeof Ionicons.glyphMap }
+> = {
   Dashboard: { active: "pulse", outline: "pulse-outline" },
   ESPs: { active: "hardware-chip", outline: "hardware-chip-outline" },
   Controls: { active: "game-controller", outline: "game-controller-outline" },
@@ -62,11 +64,7 @@ export function BottomTabs() {
           const icons = ICON_MAP[route.name];
           return (
             <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
-              <Ionicons
-                name={focused ? icons.active : icons.outline}
-                size={size}
-                color={color}
-              />
+              <Ionicons name={focused ? icons.active : icons.outline} size={size} color={color} />
             </View>
           );
         },

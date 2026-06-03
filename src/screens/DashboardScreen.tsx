@@ -15,8 +15,7 @@ export function DashboardScreen() {
   const { bme280, lux, actuators, mqttState, systemStatus } = useMqtt();
 
   const connected = mqttState.status === "connected";
-  const mqttBadgeTone = connected ? "success" : "danger";
-  const mqttBadgeLabel = connected ? 'ONLINE' : 'OFFLINE';
+  const mqttBadgeLabel = connected ? "ONLINE" : "OFFLINE";
 
   return (
     <GradientBackground>
@@ -29,9 +28,7 @@ export function DashboardScreen() {
             </View>
             <View style={styles.brokerRow}>
               <AnimatedStatusDot active={connected} size={10} style={{ marginRight: 4 }} />
-              <Text style={styles.brokerText}>
-                {connected ? 'ONLINE' : mqttBadgeLabel}
-              </Text>
+              <Text style={styles.brokerText}>{connected ? "ONLINE" : mqttBadgeLabel}</Text>
             </View>
           </View>
           <View style={styles.headerAccent} />
@@ -40,7 +37,11 @@ export function DashboardScreen() {
         {/* BME280 */}
         <GlassCard accent="cyan">
           <View style={styles.cardHeader}>
-            <SectionTitle title="BME280" icon="thermometer-outline" iconColor={AppTheme.colors.primary} />
+            <SectionTitle
+              title="BME280"
+              icon="thermometer-outline"
+              iconColor={AppTheme.colors.primary}
+            />
             <StatusBadge
               label={bme280?.online ? "ACTIVE" : "OFFLINE"}
               tone={bme280?.online ? "success" : "muted"}
@@ -104,7 +105,9 @@ export function DashboardScreen() {
               <Text
                 style={[
                   styles.stateValue,
-                  { color: lux?.state === "DAY" ? AppTheme.colors.warning : AppTheme.colors.primary },
+                  {
+                    color: lux?.state === "DAY" ? AppTheme.colors.warning : AppTheme.colors.primary,
+                  },
                 ]}
               >
                 {lux?.state ?? "--"}
@@ -118,7 +121,11 @@ export function DashboardScreen() {
         {/* Actuators */}
         <GlassCard accent="green">
           <View style={styles.cardHeader}>
-            <SectionTitle title="Actuators" icon="flash-outline" iconColor={AppTheme.colors.secondary} />
+            <SectionTitle
+              title="Actuators"
+              icon="flash-outline"
+              iconColor={AppTheme.colors.secondary}
+            />
             <StatusBadge
               label={actuators ? "ACTIVE" : "IDLE"}
               tone={actuators ? "success" : "muted"}
@@ -134,7 +141,9 @@ export function DashboardScreen() {
               <Text style={[styles.actuatorLabel, actuators?.fan && styles.actuatorLabelOn]}>
                 Fan
               </Text>
-              <Text style={[styles.actuatorState, actuators?.fan ? styles.stateOn : styles.stateOff]}>
+              <Text
+                style={[styles.actuatorState, actuators?.fan ? styles.stateOn : styles.stateOff]}
+              >
                 {actuators?.fan === undefined ? "--" : actuators.fan ? "ON" : "OFF"}
               </Text>
             </View>
@@ -147,7 +156,9 @@ export function DashboardScreen() {
               <Text style={[styles.actuatorLabel, actuators?.light && styles.actuatorLabelOn]}>
                 Light
               </Text>
-              <Text style={[styles.actuatorState, actuators?.light ? styles.stateOn : styles.stateOff]}>
+              <Text
+                style={[styles.actuatorState, actuators?.light ? styles.stateOn : styles.stateOff]}
+              >
                 {actuators?.light === undefined ? "--" : actuators.light ? "ON" : "OFF"}
               </Text>
             </View>
@@ -158,7 +169,11 @@ export function DashboardScreen() {
         {/* System Status */}
         <GlassCard>
           <View style={styles.cardHeader}>
-            <SectionTitle title="System" icon="server-outline" iconColor={AppTheme.colors.textMuted} />
+            <SectionTitle
+              title="System"
+              icon="server-outline"
+              iconColor={AppTheme.colors.textMuted}
+            />
           </View>
           <View style={styles.sysGrid}>
             <View style={styles.sysRow}>
@@ -184,9 +199,7 @@ export function DashboardScreen() {
               </View>
               <View style={styles.sysBlock}>
                 <Text style={styles.sysLabel}>Last Packet</Text>
-                <Text style={styles.sysValue}>
-                  {formatRelativeTime(systemStatus.lastPacketAt)}
-                </Text>
+                <Text style={styles.sysValue}>{formatRelativeTime(systemStatus.lastPacketAt)}</Text>
               </View>
             </View>
           </View>
@@ -237,7 +250,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: AppTheme.radius.full,
     overflow: "hidden",
-    marginBottom: 8
+    marginBottom: 8,
   },
   brokerText: {
     color: AppTheme.colors.textOnDark,

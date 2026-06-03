@@ -13,14 +13,7 @@ interface ToggleButtonProps {
   icon?: keyof typeof Ionicons.glyphMap;
 }
 
-export function ToggleButton({
-  label,
-  active,
-  onPress,
-  disabled,
-  style,
-  icon,
-}: ToggleButtonProps) {
+export function ToggleButton({ label, active, onPress, disabled, style, icon }: ToggleButtonProps) {
   return (
     <Pressable
       onPress={onPress}
