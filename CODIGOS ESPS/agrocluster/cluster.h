@@ -43,3 +43,5 @@ void clusterPublishLux(float lux);
 void clusterPublishFanState(bool on);
 void clusterPublishLightState(bool on);
 void clusterPublishRelayControllers(uint8_t fanControllerId, uint8_t lightControllerId);
+const uint8_t (*clusterGetPeerMacs())[6];
+int clusterGetSelfId();

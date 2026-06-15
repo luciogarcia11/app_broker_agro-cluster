@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 import { BlurView } from "expo-blur";
 
-import { AppTheme } from "../styles/theme";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface GlassCardProps {
   children: ReactNode;
@@ -12,15 +12,24 @@ interface GlassCardProps {
 }
 
 export function GlassCard({ children, style, intensity = 20, accent = "none" }: GlassCardProps) {
+  const { theme } = useTheme();
+
   const accentColor =
     accent === "cyan"
-      ? AppTheme.colors.primary
+      ? theme.colors.primary
       : accent === "green"
-        ? AppTheme.colors.secondary
+        ? theme.colors.secondary
         : "transparent";
 
   return (
-    <View style={[styles.card, style]}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: theme.colors.cardPrimary, borderColor: theme.colors.cardGlassBorder },
+        theme.shadows.md,
+        style,
+      ]}
+    >
       <BlurView intensity={intensity} tint="light" style={StyleSheet.absoluteFill} />
       <View style={[styles.accentBar, { backgroundColor: accentColor }]} />
       <View style={styles.content}>{children}</View>
@@ -30,13 +39,10 @@ export function GlassCard({ children, style, intensity = 20, accent = "none" }: 
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: AppTheme.colors.cardPrimary,
-    borderRadius: AppTheme.radius.lg,
-    marginBottom: AppTheme.spacing.lg,
+    borderRadius: 22,
+    marginBottom: 24,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: AppTheme.colors.cardGlassBorder,
-    ...AppTheme.shadows.md,
   },
   accentBar: {
     position: "absolute",
@@ -46,7 +52,7 @@ const styles = StyleSheet.create({
     height: 3,
   },
   content: {
-    padding: AppTheme.spacing.lg,
-    gap: AppTheme.spacing.sm,
+    padding: 24,
+    gap: 10,
   },
 });

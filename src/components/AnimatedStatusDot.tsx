@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, ViewStyle } from "react-native";
 
-import { AppTheme } from "../styles/theme";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface AnimatedStatusDotProps {
   active: boolean;
@@ -10,6 +10,7 @@ interface AnimatedStatusDotProps {
 }
 
 export function AnimatedStatusDot({ active, style, size = 10 }: AnimatedStatusDotProps) {
+  const { theme } = useTheme();
   const anim = useRef(new Animated.Value(active ? 1 : 0)).current;
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export function AnimatedStatusDot({ active, style, size = 10 }: AnimatedStatusDo
           width: size,
           height: size,
           borderRadius: size / 2,
-          backgroundColor: active ? AppTheme.colors.success : AppTheme.colors.textMuted,
+          backgroundColor: active ? theme.colors.success : theme.colors.textMuted,
           transform: [{ scale: anim }],
         },
         style,

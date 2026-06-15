@@ -37,6 +37,12 @@
       "skillPath": "mqtt-development/SKILL.md",
       "computedHash": "b45982e5410605159233eacb0a892132602633146ac187a1bb8469076e550904"
     },
+    "organization-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "skillPath": "better-auth/organization/SKILL.md",
+      "computedHash": "fa7a76e45a1f9632e6d63e92b476cf566e64f6e93a2c8ee00bc77b4a74008fbd"
+    },
     "react-native-architecture": {
       "source": "wshobson/agents",
       "sourceType": "github",

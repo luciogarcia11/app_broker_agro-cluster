@@ -37,25 +37,26 @@ No test scripts exist.
 
 ## Repo structure
 
-| Path                            | Content                                                                          |
-| ------------------------------- | -------------------------------------------------------------------------------- |
-| `App.tsx`                       | Entrypoint — `MqttProvider` > `NavigationContainer` > `BottomTabs`               |
-| `src/screens/`                  | 5 screens: Dashboard, Controls, ESPs, MQTT, Settings                             |
-| `src/contexts/MqttContext.tsx`  | Global MQTT state (React Context + Provider)                                     |
-| `src/services/mqttService.ts`   | Singleton MQTT client wrapping `mqtt` (import from `mqtt/dist/mqtt`, not `mqtt`) |
-| `src/hooks/useMqtt.ts`          | Hook to access `MqttContext`                                                     |
-| `src/components/`               | 7 reusable UI components (GlassCard, ToggleButton, etc.)                         |
-| `src/styles/theme.ts`           | Centralized theme (colors, spacing, typography, shadows)                         |
-| `src/types/`                    | `mqtt.ts`, `sensors.ts`, `esp.ts`                                                |
-| `src/navigation/BottomTabs.tsx` | Bottom tab navigator with 5 routes                                               |
-| `src/utils/time.ts`             | `formatRelativeTime()` helper                                                    |
-| `agrocluster/`                  | ESP32 firmware (Arduino C++, PlatformIO or Arduino IDE)                          |
-| `CODIGOS ESPS/`                 | ESP8266 test sketches                                                            |
+| Path                               | Content                                                                          |
+| ---------------------------------- | -------------------------------------------------------------------------------- |
+| `App.tsx`                          | Entrypoint — `MqttProvider` > `NavigationContainer` > `BottomTabs`               |
+| `src/screens/`                     | 5 screens: Dashboard, Controls, ESPs, MQTT, Settings                             |
+| `src/contexts/MqttContext.tsx`     | Global MQTT state (React Context + Provider)                                     |
+| `src/services/mqttService.ts`      | Singleton MQTT client wrapping `mqtt` (import from `mqtt/dist/mqtt`, not `mqtt`) |
+| `src/hooks/useMqtt.ts`             | Hook to access `MqttContext`                                                     |
+| `src/components/`                  | 7 reusable UI components (GlassCard, ToggleButton, etc.)                         |
+| `src/styles/theme.ts`              | Centralized theme (colors, spacing, typography, shadows)                         |
+| `src/types/`                       | `mqtt.ts`, `sensors.ts`, `esp.ts`                                                |
+| `src/navigation/BottomTabs.tsx`    | Bottom tab navigator with 5 routes                                               |
+| `src/utils/time.ts`                | `formatRelativeTime()` helper                                                    |
+| `CODIGOS ESPS/agrocluster/`        | Main ESP32 firmware (PlatformIO)                                                 |
+| `CODIGOS ESPS/agrocluster_server/` | ESP32 ESP-NOW server project                                                     |
+| `CODIGOS ESPS/testes/`             | Test sketches: `wifi/`, `mqtt/`, `hardware/`                                     |
 
 ## Key gotchas
 
 - **Path aliases**: `tsconfig.json` defines `@/components/*` → `src/components/*` etc., but existing code uses **relative imports** (`../components/`). Match the pattern used in the file you edit.
-- **MQTT import**: Must import from `"mqtt/dist/mqtt"` (not `"mqtt"`). See `src/services/mqttService.ts:1`.
+- **MQTT import**: Must import from `"mqtt"` (not `"mqtt/dist/mqtt"`). See `src/services/mqttService.ts:1`.
 - **Global polyfills**: `Buffer` and `process` are polyfilled globally in `mqttService.ts:7-12`. If you touch that file, keep them.
 - **Babel**: `react-native-reanimated/plugin` must be **last** in `babel.config.js`.
 - **Config persistence**: MQTT config saved to AsyncStorage under key `"agrocluster.mqtt.config"` (see `MqttContext.tsx:33`).

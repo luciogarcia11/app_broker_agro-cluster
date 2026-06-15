@@ -7,7 +7,7 @@ import { DashboardScreen } from "../screens/DashboardScreen";
 import { EspsScreen } from "../screens/EspsScreen";
 import { MqttScreen } from "../screens/MqttScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
-import { AppTheme } from "../styles/theme";
+import { useTheme } from "../contexts/ThemeContext";
 
 export type BottomTabParamList = {
   Dashboard: undefined;
@@ -31,20 +31,22 @@ const ICON_MAP: Record<
 };
 
 export function BottomTabs() {
+  const { theme } = useTheme();
+  const isDark = theme.navigation.colors.card !== "#ffffff";
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: AppTheme.colors.primary,
-        tabBarInactiveTintColor: "rgba(255, 255, 255, 0.35)",
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: isDark ? "rgba(255, 255, 255, 0.35)" : "rgba(15, 26, 43, 0.4)",
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: "700",
           letterSpacing: 0.3,
         },
         tabBarStyle: {
-          backgroundColor: "#0a1d38",
-          borderTopColor: "rgba(34, 211, 238, 0.12)",
+          backgroundColor: isDark ? "#0a1d38" : "#ffffff",
+          borderTopColor: isDark ? "rgba(34, 211, 238, 0.12)" : "rgba(8, 145, 178, 0.12)",
           borderTopWidth: 1,
           height: 72,
           paddingBottom: 12,
@@ -55,9 +57,9 @@ export function BottomTabs() {
           right: 20,
           borderRadius: 24,
           elevation: 5,
-          shadowColor: "#000",
+          shadowColor: isDark ? "#000" : theme.colors.black,
           shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
+          shadowOpacity: isDark ? 0.3 : 0.1,
           shadowRadius: 6,
         },
         tabBarIcon: ({ color, size, focused }) => {
@@ -70,11 +72,23 @@ export function BottomTabs() {
         },
       })}
     >
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{ tabBarLabel: "Painel" }}
+      />
       <Tab.Screen name="ESPs" component={EspsScreen} />
-      <Tab.Screen name="Controls" component={ControlsScreen} />
+      <Tab.Screen
+        name="Controls"
+        component={ControlsScreen}
+        options={{ tabBarLabel: "Controles" }}
+      />
       <Tab.Screen name="MQTT" component={MqttScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ tabBarLabel: "Configurações" }}
+      />
     </Tab.Navigator>
   );
 }

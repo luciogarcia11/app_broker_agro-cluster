@@ -193,8 +193,6 @@ static void OnDataRecv(const esp_now_recv_info *info, const uint8_t *incomingDat
 }
 
 int clusterResolveId(const uint8_t macs[4][6]) {
-  WiFi.mode(WIFI_STA);
-
   uint8_t selfMac[6] = {0};
   esp_wifi_get_mac(WIFI_IF_STA, selfMac);
 
@@ -233,9 +231,6 @@ void clusterBegin(int myId, const uint8_t macs[4][6]) {
   sharedReadings.lightSourceId = 0;
   sharedReadings.fanControllerId = 0;
   sharedReadings.lightControllerId = 0;
-
-  WiFi.mode(WIFI_STA);
-  esp_wifi_set_channel(ESPNOW_CHANNEL, WIFI_SECOND_CHAN_NONE);
 
   if (esp_now_init() != ESP_OK) {
     return;
@@ -439,6 +434,14 @@ void clusterPublishLightState(bool on) {
   pendingLightSendMs = millis();
 
   sendRelayMessage(0x02, false, on, 0, 0, pendingLightSeq);
+}
+
+const uint8_t (*clusterGetPeerMacs())[6] {
+  return peerMacs;
+}
+
+int clusterGetSelfId() {
+  return selfId;
 }
 
 void clusterPublishRelayControllers(uint8_t fanControllerId, uint8_t lightControllerId) {

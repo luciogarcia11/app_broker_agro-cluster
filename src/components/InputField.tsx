@@ -1,7 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-import { AppTheme } from "../styles/theme";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface InputFieldProps {
   label: string;
@@ -9,6 +10,8 @@ interface InputFieldProps {
   placeholder?: string;
   onChangeText: (value: string) => void;
   secureTextEntry?: boolean;
+  helperText?: string;
+  icon?: keyof typeof Ionicons.glyphMap;
 }
 
 export function InputField({
@@ -17,18 +20,33 @@ export function InputField({
   placeholder,
   onChangeText,
   secureTextEntry,
+  helperText,
+  icon,
 }: InputFieldProps) {
+  const { theme } = useTheme();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <View style={styles.labelRow}>
+        {icon && (
+          <Ionicons name={icon} size={14} color={theme.colors.textMuted} style={styles.labelIcon} />
+        )}
+        <Text style={[styles.label, { color: theme.colors.textMuted }]}>{label}</Text>
+      </View>
       <TextInput
         value={value}
         placeholder={placeholder}
-        placeholderTextColor={AppTheme.colors.textMuted}
+        placeholderTextColor={theme.colors.textMuted}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
-        style={styles.input}
+        style={[
+          styles.input,
+          { backgroundColor: theme.colors.cardSecondary, color: theme.colors.textPrimary },
+        ]}
       />
+      {helperText && (
+        <Text style={[styles.helper, { color: theme.colors.textMuted }]}>{helperText}</Text>
+      )}
     </View>
   );
 }
@@ -37,22 +55,30 @@ const styles = StyleSheet.create({
   container: {
     gap: 6,
   },
+  labelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  labelIcon: {
+    marginRight: 6,
+  },
   label: {
-    color: AppTheme.colors.textMuted,
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.8,
     textTransform: "uppercase",
   },
   input: {
-    borderRadius: AppTheme.radius.md,
-    backgroundColor: AppTheme.colors.cardSecondary,
+    borderRadius: 16,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    color: AppTheme.colors.textPrimary,
     fontSize: 14,
     fontWeight: "500",
     borderWidth: 1,
     borderColor: "transparent",
+  },
+  helper: {
+    fontSize: 11,
+    lineHeight: 15,
   },
 });

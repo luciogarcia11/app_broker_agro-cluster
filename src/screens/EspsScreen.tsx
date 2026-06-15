@@ -6,7 +6,7 @@ import { GradientBackground } from "../components/GradientBackground";
 import { GlassCard } from "../components/GlassCard";
 import { AnimatedStatusDot } from "../components/AnimatedStatusDot";
 import { useMqtt } from "../hooks/useMqtt";
-import { AppTheme } from "../styles/theme";
+import { useTheme } from "../contexts/ThemeContext";
 import { formatRelativeTime } from "../utils/time";
 import type { EspRole } from "../types/esp";
 
@@ -17,14 +17,9 @@ const ROLE_ICONS: Record<EspRole, keyof typeof Ionicons.glyphMap> = {
   Relay: "git-merge",
 };
 
-const ROLE_COLORS: Record<EspRole, string> = {
-  Leader: AppTheme.colors.warning,
-  Sensor: AppTheme.colors.primary,
-  Actuator: AppTheme.colors.secondary,
-  Relay: AppTheme.colors.danger,
-};
-
 function SignalBars({ rssi }: { rssi: number }) {
+  const { themeMode } = useTheme();
+  const isDark = themeMode === "dark";
   const bars = rssi === 0 ? 0 : rssi > -50 ? 4 : rssi > -70 ? 3 : rssi > -85 ? 2 : 1;
   const colors = ["#f87171", "#fbbf24", "#4ade80", "#22d3ee"];
 
@@ -37,7 +32,8 @@ function SignalBars({ rssi }: { rssi: number }) {
             signalStyles.bar,
             {
               height: 6 + i * 4,
-              backgroundColor: i < bars ? colors[i] : "rgba(255,255,255,0.15)",
+              backgroundColor:
+                i < bars ? colors[i] : isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.1)",
             },
           ]}
         />
@@ -59,26 +55,38 @@ const signalStyles = StyleSheet.create({
 });
 
 export function EspsScreen() {
+  const { theme } = useTheme();
   const { espNodes } = useMqtt();
+
+  const ROLE_COLORS: Record<EspRole, string> = {
+    Leader: theme.colors.warning,
+    Sensor: theme.colors.primary,
+    Actuator: theme.colors.secondary,
+    Relay: theme.colors.danger,
+  };
 
   return (
     <GradientBackground>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.headerSection}>
-          <Text style={styles.title}>ESP Cluster</Text>
-          <Text style={styles.subtitle}>
-            {espNodes.length} node{espNodes.length !== 1 ? "s" : ""} ·{" "}
+          <Text style={[styles.title, { color: theme.colors.textOnDark }]}>Cluster ESP</Text>
+          <Text style={[styles.subtitle, { color: theme.colors.textMuted }]}>
+            {espNodes.length} dispositivo{espNodes.length !== 1 ? "s" : ""} ·{" "}
             {espNodes.filter((n) => n.online).length} online
           </Text>
-          <View style={styles.headerAccent} />
+          <View style={[styles.headerAccent, { backgroundColor: theme.colors.primary }]} />
         </View>
 
         {espNodes.length === 0 ? (
           <GlassCard>
             <View style={styles.emptyContainer}>
-              <Ionicons name="hardware-chip-outline" size={48} color={AppTheme.colors.textMuted} />
-              <Text style={styles.emptyText}>Nenhum ESP recebido ainda.</Text>
-              <Text style={styles.emptyHint}>Aguardando dados dos sensores...</Text>
+              <Ionicons name="hardware-chip-outline" size={48} color={theme.colors.textMuted} />
+              <Text style={[styles.emptyText, { color: theme.colors.textMuted }]}>
+                Nenhum ESP recebido ainda.
+              </Text>
+              <Text style={[styles.emptyHint, { color: theme.colors.textMuted }]}>
+                Aguardando dados dos sensores...
+              </Text>
             </View>
           </GlassCard>
         ) : (
@@ -87,14 +95,16 @@ export function EspsScreen() {
               <View style={styles.cardHeader}>
                 <View style={styles.cardTitleRow}>
                   <Ionicons name={ROLE_ICONS[node.role]} size={20} color={ROLE_COLORS[node.role]} />
-                  <Text style={styles.nodeId}>{node.id}</Text>
+                  <Text style={[styles.nodeId, { color: theme.colors.textPrimary }]}>
+                    {node.id}
+                  </Text>
                 </View>
                 <View style={styles.statusRow}>
                   <AnimatedStatusDot active={node.online} size={10} />
                   <Text
                     style={[
                       styles.statusText,
-                      { color: node.online ? AppTheme.colors.success : AppTheme.colors.textMuted },
+                      { color: node.online ? theme.colors.success : theme.colors.textMuted },
                     ]}
                   >
                     {node.online ? "ONLINE" : "OFFLINE"}
@@ -103,38 +113,52 @@ export function EspsScreen() {
               </View>
 
               <View style={styles.metaRow}>
-                <View style={styles.metaBlock}>
-                  <Text style={styles.metaLabel}>Role</Text>
+                <View style={[styles.metaBlock, { backgroundColor: theme.colors.cardSecondary }]}>
+                  <Text style={[styles.metaLabel, { color: theme.colors.textMuted }]}>Função</Text>
                   <View style={styles.metaValueRow}>
                     <View style={[styles.roleDot, { backgroundColor: ROLE_COLORS[node.role] }]} />
-                    <Text style={styles.metaValue}>{node.role}</Text>
+                    <Text style={[styles.metaValue, { color: theme.colors.textPrimary }]}>
+                      {node.role}
+                    </Text>
                   </View>
                 </View>
-                <View style={styles.metaBlock}>
-                  <Text style={styles.metaLabel}>Signal</Text>
+                <View style={[styles.metaBlock, { backgroundColor: theme.colors.cardSecondary }]}>
+                  <Text style={[styles.metaLabel, { color: theme.colors.textMuted }]}>Sinal</Text>
                   <View style={styles.metaValueRow}>
                     <SignalBars rssi={node.rssi} />
-                    <Text style={styles.metaValue}>{node.rssi} dBm</Text>
+                    <Text style={[styles.metaValue, { color: theme.colors.textPrimary }]}>
+                      {node.rssi} dBm
+                    </Text>
                   </View>
                 </View>
               </View>
 
               <View style={styles.metaRow}>
-                <View style={styles.metaBlock}>
-                  <Text style={styles.metaLabel}>MAC</Text>
-                  <Text style={styles.metaValueMono}>{node.mac}</Text>
+                <View style={[styles.metaBlock, { backgroundColor: theme.colors.cardSecondary }]}>
+                  <Text style={[styles.metaLabel, { color: theme.colors.textMuted }]}>MAC</Text>
+                  <Text style={[styles.metaValueMono, { color: theme.colors.textPrimary }]}>
+                    {node.mac}
+                  </Text>
                 </View>
-                <View style={styles.metaBlock}>
-                  <Text style={styles.metaLabel}>Battery</Text>
-                  <Text style={[styles.metaValue, !node.battery && styles.metaValueMuted]}>
-                    {node.battery ? `${node.battery}%` : "N/A"}
+                <View style={[styles.metaBlock, { backgroundColor: theme.colors.cardSecondary }]}>
+                  <Text style={[styles.metaLabel, { color: theme.colors.textMuted }]}>Bateria</Text>
+                  <Text
+                    style={[
+                      styles.metaValue,
+                      { color: theme.colors.textPrimary },
+                      !node.battery && { color: theme.colors.textMuted },
+                    ]}
+                  >
+                    {node.battery ? `${node.battery}%` : "N/D"}
                   </Text>
                 </View>
               </View>
 
               <View style={styles.timeRow}>
-                <Ionicons name="time-outline" size={14} color={AppTheme.colors.textMuted} />
-                <Text style={styles.timeText}>Last seen: {formatRelativeTime(node.lastSeen)}</Text>
+                <Ionicons name="time-outline" size={14} color={theme.colors.textMuted} />
+                <Text style={[styles.timeText, { color: theme.colors.textMuted }]}>
+                  Visto por último: {formatRelativeTime(node.lastSeen)}
+                </Text>
               </View>
             </GlassCard>
           ))
@@ -146,28 +170,25 @@ export function EspsScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: AppTheme.spacing.lg,
+    padding: 24,
     paddingTop: 56,
     paddingBottom: 80,
   },
   headerSection: {
-    marginBottom: AppTheme.spacing.lg,
+    marginBottom: 24,
   },
   headerAccent: {
     height: 3,
     width: 60,
-    backgroundColor: AppTheme.colors.primary,
     borderRadius: 2,
-    marginTop: AppTheme.spacing.sm,
+    marginTop: 10,
   },
   title: {
-    color: AppTheme.colors.textOnDark,
     fontSize: 28,
     fontWeight: "700",
     letterSpacing: -0.5,
   },
   subtitle: {
-    color: "rgba(255, 255, 255, 0.6)",
     fontSize: 13,
     marginTop: 4,
   },
@@ -175,7 +196,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: AppTheme.spacing.sm,
+    marginBottom: 10,
   },
   cardTitleRow: {
     flexDirection: "row",
@@ -185,7 +206,6 @@ const styles = StyleSheet.create({
   nodeId: {
     fontSize: 16,
     fontWeight: "700",
-    color: AppTheme.colors.textPrimary,
   },
   statusRow: {
     flexDirection: "row",
@@ -199,17 +219,15 @@ const styles = StyleSheet.create({
   },
   metaRow: {
     flexDirection: "row",
-    gap: AppTheme.spacing.sm,
-    marginBottom: AppTheme.spacing.sm,
+    gap: 10,
+    marginBottom: 10,
   },
   metaBlock: {
     flex: 1,
-    backgroundColor: AppTheme.colors.cardSecondary,
-    borderRadius: AppTheme.radius.md,
-    padding: AppTheme.spacing.sm,
+    borderRadius: 16,
+    padding: 10,
   },
   metaLabel: {
-    color: AppTheme.colors.textMuted,
     fontSize: 11,
     fontWeight: "600",
     textTransform: "uppercase",
@@ -222,18 +240,13 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   metaValue: {
-    color: AppTheme.colors.textPrimary,
     fontSize: 14,
     fontWeight: "600",
   },
   metaValueMono: {
-    color: AppTheme.colors.textPrimary,
     fontSize: 13,
     fontWeight: "500",
     fontFamily: "monospace",
-  },
-  metaValueMuted: {
-    color: AppTheme.colors.textMuted,
   },
   roleDot: {
     width: 8,
@@ -246,22 +259,19 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   timeText: {
-    color: AppTheme.colors.textMuted,
     fontSize: 12,
   },
   emptyContainer: {
     alignItems: "center",
-    paddingVertical: AppTheme.spacing.lg,
+    paddingVertical: 24,
     gap: 8,
   },
   emptyText: {
-    color: AppTheme.colors.textMuted,
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
   },
   emptyHint: {
-    color: AppTheme.colors.textMuted,
     fontSize: 13,
     textAlign: "center",
     opacity: 0.7,

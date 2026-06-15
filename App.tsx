@@ -5,20 +5,30 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
 import { enableScreens } from "react-native-screens";
 import { MqttProvider } from "./src/contexts/MqttContext";
-import { AppTheme } from "./src/styles/theme";
+import { ThemeProvider, useTheme } from "./src/contexts/ThemeContext";
 import { BottomTabs } from "./src/navigation/BottomTabs";
 
 enableScreens();
 
-export default function App() {
+function AppContent() {
+  const { theme, themeMode } = useTheme();
+
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle={themeMode === "dark" ? "light-content" : "dark-content"} />
       <MqttProvider>
-        <NavigationContainer theme={AppTheme.navigation}>
+        <NavigationContainer theme={theme.navigation}>
           <BottomTabs />
         </NavigationContainer>
       </MqttProvider>
     </SafeAreaProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }

@@ -33,20 +33,21 @@ interface MqttContextValue {
   connect: () => void;
   disconnect: () => void;
   saveConfig: (next: MqttConfig) => Promise<void>;
+  resetConfig: () => Promise<void>;
   publish: (topic: string, payload: string) => void;
 }
 
 const STORAGE_KEY = "agrocluster.mqtt.config";
 
 const defaultConfig: MqttConfig = {
-  brokerUrl: "6187843070b544d6898bf05b65b41a6e.s1.eu.hivemq.cloud",
-  websocketUrl: "wss://6187843070b544d6898bf05b65b41a6e.s1.eu.hivemq.cloud:8884/mqtt",
-  port: "8883",
+  brokerUrl: "",
+  websocketUrl: "",
+  port: "",
   clientId: `agrocluster_${Math.random().toString(16).slice(2, 10)}`,
   username: "",
   password: "",
   useTls: true,
-  autoReconnect: false, // Alterado para falso por padrão
+  autoReconnect: false,
   keepAlive: "30",
   topics: [
     "agrocluster/sensors/bme280",
@@ -253,6 +254,15 @@ export function MqttProvider({ children }: { children: ReactNode }) {
     mqttService.publish(topic, payload);
   }, []);
 
+  const resetConfig = useCallback(async () => {
+    await AsyncStorage.removeItem(STORAGE_KEY);
+    setConfig(defaultConfig);
+    if (mqttState.status !== "disconnected") {
+      mqttService.disconnect();
+    }
+    setMqttState({ status: "disconnected", lastError: undefined });
+  }, [mqttState.status]);
+
   const value = useMemo(
     () => ({
       config,
@@ -265,6 +275,7 @@ export function MqttProvider({ children }: { children: ReactNode }) {
       connect,
       disconnect,
       saveConfig,
+      resetConfig,
       publish,
     }),
     [
@@ -277,6 +288,7 @@ export function MqttProvider({ children }: { children: ReactNode }) {
       lux,
       mqttState,
       publish,
+      resetConfig,
       saveConfig,
       systemStatus,
     ],

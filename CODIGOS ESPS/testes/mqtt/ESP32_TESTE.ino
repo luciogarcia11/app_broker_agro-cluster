@@ -1,16 +1,13 @@
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 
-const char* wifi_ssid = "PlugNet_Gabriel";
-const char* wifi_password = "05071994";
+const char* wifi_ssid     = "IF-CampusMuz";
+const char* wifi_password = "";
 
-const char* mqtt_server =
-"6187843070b544d6898bf05b65b41a6e.s1.eu.hivemq.cloud";
-
-const int mqtt_port = 8883;
-
-const char* mqtt_user = "Agro_Cluster";
+const char* mqtt_server   = "6187843070b544d6898bf05b65b41a6e.s1.eu.hivemq.cloud";
+const int   mqtt_port     = 8883;
+const char* mqtt_user     = "Agro_Cluster";
 const char* mqtt_password = "Agrocluster123";
 
 const char* topic_bme =
@@ -54,7 +51,7 @@ void reconnectMQTT() {
     Serial.println("Conectando MQTT...");
 
     String clientId =
-      "ESP8266-" +
+      "ESP32-" +
       String(random(0xffff), HEX);
 
     if (

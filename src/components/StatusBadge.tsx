@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { AppTheme } from "../styles/theme";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface StatusBadgeProps {
   label: string;
@@ -10,18 +10,20 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ label, tone }: StatusBadgeProps) {
+  const { theme } = useTheme();
+
   const toneColor = {
-    success: AppTheme.colors.success,
-    muted: AppTheme.colors.textMuted,
-    warning: AppTheme.colors.warning,
-    danger: AppTheme.colors.danger,
+    success: theme.colors.success,
+    muted: theme.colors.textMuted,
+    warning: theme.colors.warning,
+    danger: theme.colors.danger,
   }[tone];
 
   const bgColor = {
-    success: AppTheme.colors.successBg,
+    success: theme.colors.successBg,
     muted: "transparent",
-    warning: AppTheme.colors.warningBg,
-    danger: AppTheme.colors.dangerBg,
+    warning: theme.colors.warningBg,
+    danger: theme.colors.dangerBg,
   }[tone];
 
   return (
@@ -37,7 +39,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderRadius: AppTheme.radius.full,
+    borderRadius: 999,
     paddingHorizontal: 10,
     paddingVertical: 4,
     gap: 6,

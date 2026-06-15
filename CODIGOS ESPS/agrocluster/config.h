@@ -34,4 +34,18 @@ constexpr float HUM_OFF_PCT = 65.0f;
 constexpr float LUX_ON = 50.0f;
 constexpr float LUX_OFF = 80.0f;
 
-constexpr uint8_t LOG_LEVEL = 2;
+constexpr uint8_t LOG_LEVEL = 3;
+
+// ===== WiFi =====
+static const char* wifi_ssid       = "Suporte";
+static const char* wifi_password   = "37361411";
+constexpr unsigned long WIFI_TIMEOUT_MS = 15000;
+
+// ===== MQTT =====
+static const char* mqtt_server     = "6187843070b544d6898bf05b65b41a6e.s1.eu.hivemq.cloud";
+constexpr int mqtt_port            = 8883;
+static const char* mqtt_user       = "Agro_Cluster";
+static const char* mqtt_password   = "Agrocluster123";
+constexpr unsigned long MQTT_RECONNECT_MS = 5000;
+constexpr unsigned long MQTT_PUBLISH_INTERVAL_MS = 5000;
+constexpr unsigned long ESP_LIST_INTERVAL_MS = 10000;

@@ -11,7 +11,7 @@
       "@/styles/*": ["./src/styles/*"],
       "@/types/*": ["./src/types/*"],
       "@/utils/*": ["./src/utils/*"],
-      "mqtt/dist/mqtt": ["./node_modules/mqtt/build/index.d.ts"]
+      "mqtt": ["./node_modules/mqtt/build/index.d.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

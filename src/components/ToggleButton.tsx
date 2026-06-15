@@ -2,7 +2,7 @@ import React from "react";
 import { Pressable, StyleSheet, Text, ViewStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import { AppTheme } from "../styles/theme";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface ToggleButtonProps {
   label: string;
@@ -14,14 +14,20 @@ interface ToggleButtonProps {
 }
 
 export function ToggleButton({ label, active, onPress, disabled, style, icon }: ToggleButtonProps) {
+  const { theme } = useTheme();
+
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
       style={({ pressed }) => [
         styles.button,
-        active ? styles.active : styles.inactive,
+        {
+          backgroundColor: active ? theme.colors.secondary : theme.colors.cardSecondary,
+          borderColor: active ? theme.colors.secondaryDark : "transparent",
+        },
         (pressed || disabled) && styles.pressed,
+        active && theme.shadows.sm,
         style,
       ]}
     >
@@ -29,11 +35,16 @@ export function ToggleButton({ label, active, onPress, disabled, style, icon }: 
         <Ionicons
           name={icon}
           size={16}
-          color={active ? AppTheme.colors.textPrimary : AppTheme.colors.textMuted}
+          color={active ? theme.colors.textPrimary : theme.colors.textMuted}
           style={styles.icon}
         />
       )}
-      <Text style={[styles.label, active ? styles.labelActive : styles.labelInactive]}>
+      <Text
+        style={[
+          styles.label,
+          { color: active ? theme.colors.textPrimary : theme.colors.textMuted },
+        ]}
+      >
         {label}
       </Text>
     </Pressable>
@@ -42,7 +53,7 @@ export function ToggleButton({ label, active, onPress, disabled, style, icon }: 
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: AppTheme.radius.md,
+    borderRadius: 16,
     paddingVertical: 12,
     paddingHorizontal: 20,
     alignItems: "center",
@@ -50,15 +61,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1,
     borderWidth: 1,
-  },
-  active: {
-    backgroundColor: AppTheme.colors.secondary,
-    borderColor: AppTheme.colors.secondaryDark,
-    ...AppTheme.shadows.sm,
-  },
-  inactive: {
-    backgroundColor: AppTheme.colors.cardSecondary,
-    borderColor: "transparent",
   },
   pressed: {
     opacity: 0.6,
@@ -70,11 +72,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.5,
-  },
-  labelActive: {
-    color: AppTheme.colors.textPrimary,
-  },
-  labelInactive: {
-    color: AppTheme.colors.textMuted,
   },
 });

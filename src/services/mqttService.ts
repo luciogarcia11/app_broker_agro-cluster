@@ -1,4 +1,4 @@
-import { connect as mqttConnect, type MqttClient } from "mqtt/dist/mqtt";
+import mqtt from "mqtt";
 import { Buffer } from "buffer";
 import process from "process";
 
@@ -15,7 +15,7 @@ type StatusHandler = (status: MqttStatus, error?: string) => void;
 type MessageHandler = (topic: string, payload: string) => void;
 
 class MqttService {
-  private client: MqttClient | null = null;
+  private client: mqtt.MqttClient | null = null;
   private statusHandler?: StatusHandler;
   private messageHandler?: MessageHandler;
 
@@ -30,16 +30,16 @@ class MqttService {
     const baseUrl = config.websocketUrl || config.brokerUrl;
     const url = this.resolveWebsocketUrl(baseUrl, config);
     if (!url) {
-      this.statusHandler?.("error", "MQTT WebSocket URL is missing");
+      this.statusHandler?.("error", "URL do WebSocket MQTT não informada");
       return;
     }
 
-    this.client = mqttConnect(url, {
+    this.client = mqtt.connect(url, {
       clientId: config.clientId,
       username: config.username || undefined,
       password: config.password || undefined,
       keepalive: Number(config.keepAlive) || 30,
-      reconnectPeriod: 0,
+      reconnectPeriod: config.autoReconnect ? 5000 : 0,
       connectTimeout: 5000,
       clean: true,
     });
